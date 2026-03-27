@@ -26,6 +26,16 @@ public abstract class InventoryItem {
         return expiryDate;
     }
 
+    // Returns current state
+    public ItemState getState() {
+        return state;
+    }
+
+    // Updates lifecycle state
+    public void setState(ItemState state) {
+        this.state = state;
+    }
+
     // expiration check
     public boolean isExpired(){
         return LocalDate.now().isAfter(expiryDate);
