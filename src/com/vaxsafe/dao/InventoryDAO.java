@@ -30,4 +30,26 @@ public class InventoryDAO {
                 e.printStackTrace();
             }
     }
+
+    // Creates table if it does not exist
+    public void createTable() {
+
+        String sql = "CREATE TABLE IF NOT EXISTS vaccine_batch (" +
+                "batch_id TEXT PRIMARY KEY," +
+                "vaccine_name TEXT," +
+                "expiry_date TEXT," +
+                "min_temp REAL," +
+                "max_temp REAL," +
+                "state TEXT" +
+                ")";
+
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.execute();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
