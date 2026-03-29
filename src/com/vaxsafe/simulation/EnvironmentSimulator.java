@@ -20,15 +20,18 @@ public class EnvironmentSimulator {
         this.manager = manager;
     }
 
-    //Starts simulation for all batches
-    public void startSimulation(List<VaccineBatch> batches){
+    //Starts simulation for fixed Duration
+    public void startSimulation(List<VaccineBatch> batches, int durationSeconds){
 
         for(VaccineBatch batch : batches){
 
             // Each batch gets its own recurring sensor task
             executor.submit(() -> {
 
-                while (true) {
+                long endTime = System.currentTimeMillis() + durationSeconds * 1000L;
+
+                while (System.currentTimeMillis() < endTime) {
+
                     new SensorTask(batch, manager).run();
 
                     try{
@@ -41,10 +44,19 @@ public class EnvironmentSimulator {
                 }
             });
         }
+        shutdownAfter(durationSeconds);
     }
 
-    // Stop all running sensor tasks
-    public void stopSimulator(){
-        executor.shutdown();
+    // shuts down executor
+    private void shutdownAfter(int durationSeconds) {
+        new Thread(() -> {
+            try {
+                TimeUnit.SECONDS.sleep(durationSeconds);
+                executor.shutdown();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }).start();
     }
+    
 }
