@@ -3,14 +3,17 @@ package com.vaxsafe.service;
 import com.vaxsafe.exception.ThermalExcursionException;
 import com.vaxsafe.model.ItemState;
 import com.vaxsafe.model.VaccineBatch;
+import com.vaxsafe.dao.InventoryDAO;
 
 // Central system to control temperature validation and states
 public class ColdChainManager {
 
     private final AlertSystem alertSystem;
+    private final InventoryDAO inventoryDAO;
 
-    public ColdChainManager(AlertSystem alertSystem){
+    public ColdChainManager(AlertSystem alertSystem, InventoryDAO inventoryDAO){
         this.alertSystem = alertSystem;
+        this.inventoryDAO = inventoryDAO;
     }
 
     // Processing temperature ranges
@@ -24,12 +27,20 @@ public class ColdChainManager {
                 );
             } 
         } catch (ThermalExcursionException e){
-                // Marking batch as SPOILED
+
+            if(batch.getState() != ItemState.SPOILED){
+
                 batch.setState(ItemState.SPOILED);
 
-                // Trigger ALERT
-                alertSystem.triggerAlert(batch, temperature);
+                inventoryDAO.updateState(
+                    batch.getBatchId(),
+                    batch.getState().name()
+                );
             }
+
+            // Trigger ALERT
+            alertSystem.triggerAlert(batch, temperature);
+        }
     }
     
 }
