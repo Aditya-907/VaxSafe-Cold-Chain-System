@@ -4,6 +4,7 @@ import com.vaxsafe.exception.ThermalExcursionException;
 import com.vaxsafe.model.ItemState;
 import com.vaxsafe.model.VaccineBatch;
 import com.vaxsafe.dao.InventoryDAO;
+import com.vaxsafe.util.LoggerUtil;
 
 // Central system to control temperature validation and states
 public class ColdChainManager {
@@ -35,6 +36,11 @@ public class ColdChainManager {
                 inventoryDAO.updateState(
                     batch.getBatchId(),
                     batch.getState().name()
+                );
+                //Log State Change
+                LoggerUtil.log(
+                            "STATE CHANGE: Batch " + batch.getBatchId() +
+                            " marked as SPOILED"
                 );
             }
 

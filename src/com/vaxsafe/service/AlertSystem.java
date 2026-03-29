@@ -11,7 +11,7 @@ public class AlertSystem {
 
         String message = 
             "ALERT: Batch " + batch.getBatchId() + 
-            "exceeded safe temperature. Current Temperature is: " + temperature;
+            " exceeded safe temperature. Current Temperature is: " + temperature;
         System.out.println(message);
 
         LoggerUtil.log(message);
