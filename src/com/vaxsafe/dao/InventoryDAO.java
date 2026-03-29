@@ -52,4 +52,21 @@ public class InventoryDAO {
             e.printStackTrace();
         }
     }
+
+    // Update the state of a vaccine batch
+    public void updateState(String batchID, String state){
+        String sql = "UPDATE vaccine_batch  SET state = ? WHERE batch_id = ?";
+
+        try(Connection conn = DBConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+                // Maps entire new state to corresponding batch
+                stmt.setString(1, state);
+                stmt.setString(2, batchID);
+
+                stmt.executeUpdate();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
 }
